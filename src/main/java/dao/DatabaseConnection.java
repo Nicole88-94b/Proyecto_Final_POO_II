@@ -12,7 +12,6 @@ public class DatabaseConnection {
     private Connection connection;
 
     private DatabaseConnection() {
-
     }
     public static DatabaseConnection getInstance() {
         return INSTANCE;
