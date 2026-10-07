@@ -1,8 +1,10 @@
 package main;
 
 import dao.CategoriaDAOImpl;
+import dao.EstudianteDAOImpl;
 import dao.LibroDAOImpl;
 import dao.interfaces.CategoriaDAO;
+import dao.interfaces.EstudianteDAO;
 import dao.interfaces.LibroDAO;
 import modelo.Categoria;
 import modelo.Estudiante;
@@ -29,27 +31,17 @@ public class Main {
         CategoriaDAO categoriaDAO = new CategoriaDAOImpl();
         Categoria categoria2 = new Categoria(0, "Horror");
         LibroDAO libroDAO = new LibroDAOImpl();
+        EstudianteDAO estudianteDAO = new EstudianteDAOImpl();
 
 
 
 
         try {
-            boolean eliminado = libroDAO.eliminarLibro(11);
-            if (eliminado) {
-                System.out.println("Libro eliminado");
-                System.out.println(eliminado);
-            }
-            Libro encontrado = libroDAO.buscarLibroPorId(11);
-            if (encontrado != null) {
-                System.out.println(encontrado.getTitulo());
-            }
-            else {
-                System.out.println("Los sentimos");
-            }
 
-            List<Libro> libros = libroDAO.listarLibros();
-            for (Libro libro : libros) {
-                System.out.print(libro.getTitulo() + " " + libro.getCategoria().getNombre() + "\n");
+
+            List<Estudiante> estudiantes = estudianteDAO.listarEstudiantes();
+            for (Estudiante est : estudiantes) {
+                System.out.println(est.getNombre() + " " + est.getCurso() + " " + est.getIdEstudiante());
             }
         }
         catch (SQLException e) {
