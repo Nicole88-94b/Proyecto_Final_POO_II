@@ -1,13 +1,7 @@
 package main;
 
-import dao.CategoriaDAOImpl;
-import dao.EstudianteDAOImpl;
-import dao.LibroDAOImpl;
-import dao.UsuarioDAOImpl;
-import dao.interfaces.CategoriaDAO;
-import dao.interfaces.EstudianteDAO;
-import dao.interfaces.LibroDAO;
-import dao.interfaces.UsuarioDAO;
+import dao.*;
+import dao.interfaces.*;
 import modelo.*;
 
 import java.sql.SQLException;
@@ -34,19 +28,13 @@ public class Main {
         UsuarioDAO usuarioDAO = new UsuarioDAOImpl();
         Usuario usuario1 = new Usuario("Nicole", "18870358-5", "ni.ortegar@duoc.cl",
                 0, "abcd123", "bibliotecario");
-
+        PrestamosDAO prestamosDAO = new PrestamosDAOImpl();
 
 
         try {
-            List<Usuario> usuarios = usuarioDAO.listarUsuarios();
-            for (Usuario usuario : usuarios) {
-                System.out.println(usuario.getRut() + " " + usuario.getContrasena());
-            }
-           Usuario autenticado = usuarioDAO.autenticarUsuario("12345678-9", "clave123");
-            if (autenticado != null) {
-                System.out.println("Usuario autenticado");
-            } else {
-                System.out.println("Usuario no autenticado");
+            List<Prestamo> prestamos = prestamosDAO.listarPrestamos();
+            for (Prestamo p : prestamos) {
+                System.out.println(p.getEstudiante().getNombre() + " " + p.getLibro().getTitulo());
             }
 
         }
