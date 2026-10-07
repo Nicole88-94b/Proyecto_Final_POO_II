@@ -3,13 +3,12 @@ package main;
 import dao.CategoriaDAOImpl;
 import dao.EstudianteDAOImpl;
 import dao.LibroDAOImpl;
+import dao.UsuarioDAOImpl;
 import dao.interfaces.CategoriaDAO;
 import dao.interfaces.EstudianteDAO;
 import dao.interfaces.LibroDAO;
-import modelo.Categoria;
-import modelo.Estudiante;
-import modelo.Libro;
-import modelo.Prestamo;
+import dao.interfaces.UsuarioDAO;
+import modelo.*;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -32,17 +31,24 @@ public class Main {
         Categoria categoria2 = new Categoria(0, "Horror");
         LibroDAO libroDAO = new LibroDAOImpl();
         EstudianteDAO estudianteDAO = new EstudianteDAOImpl();
-
+        UsuarioDAO usuarioDAO = new UsuarioDAOImpl();
+        Usuario usuario1 = new Usuario("Nicole", "18870358-5", "ni.ortegar@duoc.cl",
+                0, "abcd123", "bibliotecario");
 
 
 
         try {
-
-
-            List<Estudiante> estudiantes = estudianteDAO.listarEstudiantes();
-            for (Estudiante est : estudiantes) {
-                System.out.println(est.getNombre() + " " + est.getCurso() + " " + est.getIdEstudiante());
+            List<Usuario> usuarios = usuarioDAO.listarUsuarios();
+            for (Usuario usuario : usuarios) {
+                System.out.println(usuario.getRut() + " " + usuario.getContrasena());
             }
+           Usuario autenticado = usuarioDAO.autenticarUsuario("12345678-9", "clave123");
+            if (autenticado != null) {
+                System.out.println("Usuario autenticado");
+            } else {
+                System.out.println("Usuario no autenticado");
+            }
+
         }
         catch (SQLException e) {
             e.printStackTrace();
