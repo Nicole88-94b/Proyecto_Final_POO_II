@@ -6,6 +6,9 @@ import modelo.Usuario;
 
 import java.sql.SQLException;
 
+/**
+ * Coordina la autenticación y las operaciones de cuentas de usuario.
+ */
 public class ControladorDeUsuarios {
     private UsuarioDAO usuarioDAO;
 
@@ -13,6 +16,14 @@ public class ControladorDeUsuarios {
         this.usuarioDAO = new UsuarioDAOImpl();
     }
 
+    /**
+     * Valida los datos de acceso y consulta las credenciales registradas.
+     *
+     * @param rut RUT ingresado por la persona
+     * @param contrasena contraseña ingresada
+     * @return usuario autenticado o {@code null} si no existe coincidencia
+     * @throws SQLException si la consulta no puede ejecutarse
+     */
     public Usuario autenticarUsuario(String rut, String contrasena) throws SQLException {
         if (rut == null || rut.trim().isEmpty() || contrasena == null || contrasena.trim().isEmpty()) {
             throw new IllegalArgumentException("Debe ingresar el RUT y la contraseña.");

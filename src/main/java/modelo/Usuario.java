@@ -1,5 +1,9 @@
 package modelo;
 
+/**
+ * Representa una cuenta que puede autenticarse en el sistema.
+ * El rol determina las funciones disponibles para bibliotecarios y estudiantes.
+ */
 public class Usuario extends Persona {
     private int idUsuario;
     private String contrasena;

@@ -1,5 +1,9 @@
 package modelo;
 
+/**
+ * Representa los datos personales compartidos por usuarios y estudiantes.
+ * Centraliza las validaciones básicas de nombre, RUT y correo.
+ */
 public abstract class Persona {
     private String nombre;
     private String rut;

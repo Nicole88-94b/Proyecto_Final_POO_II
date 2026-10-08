@@ -10,6 +10,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implementa el acceso JDBC a la tabla {@code estudiantes}.
+ */
 public class EstudianteDAOImpl  implements EstudianteDAO {
 
 

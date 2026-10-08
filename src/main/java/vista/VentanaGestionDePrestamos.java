@@ -15,6 +15,11 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Ventana que reúne el registro, devolución, consulta e historial de préstamos.
+ * Adapta las acciones visibles al rol del usuario y ejecuta el registro en un
+ * hilo secundario para mantener disponible la interfaz gráfica.
+ */
 public class VentanaGestionDePrestamos extends JFrame {
     private Usuario usuarioActual;
     private ControladorDePrestamos controladorDePrestamos;
@@ -32,6 +37,11 @@ public class VentanaGestionDePrestamos extends JFrame {
     private JButton btnLibrosMasPrestados;
 
 
+    /**
+     * Construye la ventana de préstamos para el usuario autenticado.
+     *
+     * @param usuarioActual usuario que determina el alcance de las consultas
+     */
     public VentanaGestionDePrestamos(Usuario usuarioActual) {
         this.usuarioActual = usuarioActual;
         controladorDeEstudiantes = new ControladorDeEstudiantes();

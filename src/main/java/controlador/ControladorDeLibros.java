@@ -10,6 +10,9 @@ import modelo.Libro;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Intermedia entre la interfaz gráfica y los DAO de libros y categorías.
+ */
 public class ControladorDeLibros {
     private LibroDAO libroDAO;
     private CategoriaDAO categoriaDAO;

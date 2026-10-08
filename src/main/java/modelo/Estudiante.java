@@ -1,5 +1,9 @@
 package modelo;
 
+/**
+ * Representa a un estudiante de la biblioteca y su curso.
+ * Sus datos permiten asociar y consultar el historial de préstamos.
+ */
 public class Estudiante extends Persona {
     private int idEstudiante;
     private String curso;

@@ -1,5 +1,9 @@
 package modelo;
 
+/**
+ * Modela un libro disponible en el catálogo de la biblioteca.
+ * Incluye sus datos editoriales, categoría e inventario disponible.
+ */
 public class Libro {
     private  int idLibro;
     private String titulo;

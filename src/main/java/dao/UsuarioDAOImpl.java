@@ -7,6 +7,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implementa el acceso JDBC a la tabla {@code usuarios}.
+ */
 public class UsuarioDAOImpl implements UsuarioDAO {
 
     @Override

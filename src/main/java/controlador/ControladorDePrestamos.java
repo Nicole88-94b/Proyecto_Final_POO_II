@@ -17,6 +17,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Gestiona el flujo de préstamos, devoluciones, estados y reportes.
+ * Las operaciones que modifican el stock están sincronizadas para evitar
+ * inconsistencias cuando existen solicitudes concurrentes.
+ */
 public class ControladorDePrestamos {
     private final EstudianteDAO estudianteDAO;
     private final PrestamosDAO prestamosDAO;
@@ -28,6 +33,15 @@ public class ControladorDePrestamos {
         libroDAO = new LibroDAOImpl();
     }
 
+    /**
+     * Registra un préstamo, calcula su fecha límite y descuenta una unidad del stock.
+     *
+     * @param idEstudiante identificador del estudiante
+     * @param idLibro identificador del libro
+     * @return préstamo registrado o {@code null} si no fue posible insertarlo
+     * @throws SQLException si falla la persistencia del préstamo o del stock
+     * @throws IllegalStateException si el libro no tiene ejemplares disponibles
+     */
     public synchronized Prestamo registrarPrestamo(int idEstudiante, int idLibro)
             throws SQLException {
         if (idEstudiante <= 0 || idLibro <= 0) {
@@ -64,6 +78,14 @@ public class ControladorDePrestamos {
 
     }
 
+    /**
+     * Marca un préstamo como devuelto y restituye una unidad al stock del libro.
+     *
+     * @param idPrestamo identificador del préstamo
+     * @return {@code true} si la devolución fue completada
+     * @throws SQLException si falla la actualización del préstamo o del libro
+     * @throws IllegalStateException si el préstamo ya estaba devuelto
+     */
     public synchronized boolean devolverPrestamo(int idPrestamo)
             throws SQLException {
         if (idPrestamo <= 0) {
@@ -104,6 +126,13 @@ public class ControladorDePrestamos {
         return activos;
     }
 
+    /**
+     * Recupera los préstamos activos y devueltos de un estudiante.
+     *
+     * @param idEstudiante identificador del estudiante
+     * @return historial individual de préstamos
+     * @throws SQLException si no puede consultarse la base de datos
+     */
     public List<Prestamo> listarHistorialPorEstudiante(int idEstudiante) throws SQLException {
         if (idEstudiante <= 0) {
             throw new IllegalArgumentException("El estudiante debe tener una ID válida.");
@@ -117,6 +146,12 @@ public class ControladorDePrestamos {
         return historial;
     }
 
+    /**
+     * Comprueba si un préstamo activo superó su fecha límite.
+     *
+     * @param prestamo préstamo que se desea evaluar
+     * @return {@code true} si está pendiente y vencido
+     */
     public boolean estaAtrasado(Prestamo prestamo) {
         if (prestamo == null) {
             throw new IllegalArgumentException("El préstamo no puede ser nulo.");
@@ -125,6 +160,12 @@ public class ControladorDePrestamos {
         return !prestamo.isDevuelto() && prestamo.getFechaDevolucion().isBefore(LocalDate.now());
     }
 
+    /**
+     * Obtiene el estado visible de un préstamo.
+     *
+     * @param prestamo préstamo que se desea evaluar
+     * @return {@code DEVUELTO}, {@code ATRASADO} o {@code ACTIVO}
+     */
     public String obtenerEstado(Prestamo prestamo) {
         if (prestamo.isDevuelto()) {
             return "DEVUELTO";
@@ -136,6 +177,14 @@ public class ControladorDePrestamos {
         return "ACTIVO";
     }
 
+    /**
+     * Busca al estudiante y al libro por sus identificadores públicos antes de registrar.
+     *
+     * @param rut RUT del estudiante
+     * @param isbn ISBN del libro
+     * @return préstamo registrado
+     * @throws SQLException si ocurre un problema de persistencia
+     */
     public Prestamo registrarPrestamo(String rut, String isbn) throws SQLException {
 
         if (rut == null || rut.trim().isEmpty() || isbn == null || isbn.trim().isEmpty()) {
@@ -154,6 +203,12 @@ public class ControladorDePrestamos {
         return registrarPrestamo(estudiante.getIdEstudiante(), libro.getIdLibro());
     }
 
+    /**
+     * Cuenta cuántas veces aparece cada título en el historial de préstamos.
+     *
+     * @return mapa que relaciona cada título con su cantidad de préstamos
+     * @throws SQLException si no puede consultarse el historial
+     */
     public Map<String, Integer> contarPrestamosPorLibro() throws SQLException {
 
         Map<String, Integer> cantidadPorLibro = new HashMap<>();

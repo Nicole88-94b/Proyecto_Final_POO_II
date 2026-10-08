@@ -9,6 +9,11 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.SQLException;
 
+/**
+ * Ventana destinada a consultar y administrar el catálogo de libros.
+ * El bibliotecario puede realizar operaciones CRUD, mientras que el estudiante
+ * accede al catálogo en modalidad de solo lectura.
+ */
 public class VentanaGestionLibros extends JFrame {
     private ControladorDeLibros controladorDeLibros;
     private JTextField campoTitulo;
@@ -25,10 +30,18 @@ public class VentanaGestionLibros extends JFrame {
     private JButton btnLimpiar;
     private final boolean soloLectura;
 
+    /**
+     * Construye la ventana con todas las opciones de administración habilitadas.
+     */
     public VentanaGestionLibros() {
         this(false);
     }
 
+    /**
+     * Construye la ventana y define si el catálogo será únicamente de consulta.
+     *
+     * @param soloLectura {@code true} para ocultar las acciones de modificación
+     */
     public VentanaGestionLibros(boolean soloLectura) {
         this.soloLectura = soloLectura;
         controladorDeLibros = new ControladorDeLibros();

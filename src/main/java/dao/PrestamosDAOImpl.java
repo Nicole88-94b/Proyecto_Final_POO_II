@@ -11,6 +11,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implementa el acceso JDBC a la tabla {@code prestamos} y reconstruye
+ * las relaciones con estudiantes y libros.
+ */
 public class PrestamosDAOImpl implements PrestamosDAO {
     @Override
     public boolean insertarPrestamo(Prestamo prestamo) throws SQLException {

@@ -1,5 +1,8 @@
 package modelo;
 
+/**
+ * Clasifica los libros del catálogo según su temática.
+ */
 public class Categoria {
     private int idCategoria;
     private String nombre;

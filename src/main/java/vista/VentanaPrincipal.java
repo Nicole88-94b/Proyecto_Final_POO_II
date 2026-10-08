@@ -6,6 +6,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
 
+/**
+ * Menú principal del sistema. Presenta las funciones disponibles según el rol
+ * del usuario autenticado y permite cerrar la sesión actual.
+ */
 public class VentanaPrincipal extends JFrame {
    private Usuario usuario;
    private JLabel lblUsuario;
@@ -14,6 +18,11 @@ public class VentanaPrincipal extends JFrame {
    private JButton btnGestionarPrestamos;
    private JButton btnCerrarSesion;
 
+    /**
+     * Construye el menú principal para el usuario que inició sesión.
+     *
+     * @param usuario usuario autenticado que determina las opciones visibles
+     */
     public VentanaPrincipal(Usuario usuario) {
         this.usuario = usuario;
         estructuraBase();

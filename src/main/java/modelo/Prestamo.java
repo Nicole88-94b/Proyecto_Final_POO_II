@@ -2,6 +2,10 @@ package modelo;
 
 import java.time.LocalDate;
 
+/**
+ * Registra la relación entre un estudiante y un libro prestado.
+ * Conserva las fechas del préstamo y el estado de devolución.
+ */
 public class Prestamo {
     private int idPrestamo;
     private Estudiante estudiante;

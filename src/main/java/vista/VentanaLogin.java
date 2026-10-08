@@ -7,12 +7,19 @@ import javax.swing.*;
 import java.awt.*;
 import java.sql.SQLException;
 
+/**
+ * Ventana de acceso al sistema. Solicita las credenciales, autentica al usuario
+ * y abre la ventana principal con las opciones correspondientes a su rol.
+ */
 public class VentanaLogin extends JFrame {
     private ControladorDeUsuarios controladorDeUsuarios;
     private JTextField campoRut;
     private JPasswordField campoContrasena;
     private JButton btnIngresar;
 
+    /**
+     * Construye y configura la ventana de inicio de sesión.
+     */
     public VentanaLogin() {
         controladorDeUsuarios = new ControladorDeUsuarios();
         estructuraBase();

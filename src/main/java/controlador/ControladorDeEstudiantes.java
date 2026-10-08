@@ -10,6 +10,9 @@ import modelo.Usuario;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Coordina la gestión de estudiantes y mantiene sincronizada su cuenta de acceso.
+ */
 public class ControladorDeEstudiantes {
     private EstudianteDAO estudianteDAO;
     private UsuarioDAO usuarioDAO;
@@ -24,6 +27,14 @@ public class ControladorDeEstudiantes {
     }
 
 
+    /**
+     * Registra al estudiante y crea una cuenta con rol estudiante.
+     *
+     * @param estudiante estudiante que se desea registrar
+     * @param contrasena contraseña inicial de su cuenta
+     * @return {@code true} si la cuenta fue creada
+     * @throws SQLException si ocurre un problema de persistencia
+     */
     public boolean registrarEstudianteConCuenta (Estudiante estudiante, String contrasena) throws SQLException {
         if (estudiante == null) {
             throw new IllegalArgumentException("El estudiante no puede ser nulo.");
@@ -46,6 +57,15 @@ public class ControladorDeEstudiantes {
         return null;
     }
 
+    /**
+     * Actualiza los datos personales tanto en el estudiante como en su cuenta.
+     * La contraseña sólo cambia cuando se recibe un valor nuevo.
+     *
+     * @param estudiante estudiante con los datos modificados
+     * @param nuevaContrasena nueva contraseña o texto vacío para conservar la anterior
+     * @return {@code true} si la actualización fue realizada
+     * @throws SQLException si ocurre un problema de persistencia
+     */
     public boolean actualizarEstudianteConCuenta(Estudiante estudiante, String nuevaContrasena) throws SQLException {
         Usuario usuario = buscarUsuarioPorRut(estudiante.getRut());
         if (usuario == null) {
@@ -66,6 +86,13 @@ public class ControladorDeEstudiantes {
         return usuarioDAO.actualizarUsuario(usuario);
     }
 
+    /**
+     * Elimina un estudiante y su cuenta cuando no mantiene historial de préstamos.
+     *
+     * @param idEstudiante identificador del estudiante
+     * @return {@code true} si se completó la eliminación
+     * @throws SQLException si existen relaciones que impiden eliminarlo
+     */
     public boolean eliminarEstudianteConCuenta(int idEstudiante) throws SQLException {
         Estudiante estudiante = estudianteDAO.buscarEstudiantePorId(idEstudiante);
         if (estudiante == null) {

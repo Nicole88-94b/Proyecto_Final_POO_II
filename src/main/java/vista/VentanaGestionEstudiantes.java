@@ -10,6 +10,11 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.SQLException;
 
+/**
+ * Ventana de administración de estudiantes y sus cuentas de acceso.
+ * Permite registrar, consultar, modificar y eliminar registros respetando las
+ * relaciones existentes en la base de datos.
+ */
 public class VentanaGestionEstudiantes extends JFrame {
     private ControladorDeEstudiantes controladorDeEstudiantes;
     private JTextField campoNombre;
@@ -24,6 +29,9 @@ public class VentanaGestionEstudiantes extends JFrame {
     private JButton btnEliminar;
     private JButton btnLimpiar;
 
+    /**
+     * Construye la ventana y carga los estudiantes registrados.
+     */
     public VentanaGestionEstudiantes() {
         controladorDeEstudiantes = new ControladorDeEstudiantes();
         estructuraBase();
