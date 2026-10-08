@@ -23,10 +23,6 @@ public class ControladorDeEstudiantes {
         return this.estudianteDAO.listarEstudiantes();
     }
 
-    public boolean registrarEstudiante(Estudiante estudiante) throws SQLException {
-        return this.estudianteDAO.insertarEstudiante(estudiante);
-    }
-
 
     public boolean registrarEstudianteConCuenta (Estudiante estudiante, String contrasena) throws SQLException {
         if (estudiante == null) {
@@ -34,7 +30,7 @@ public class ControladorDeEstudiantes {
         }
         Usuario usuario = new Usuario(estudiante.getNombre(), estudiante.getRut(), estudiante.getCorreo(), 0, contrasena, "estudiante");
 
-        boolean estudianteRegistrado = registrarEstudiante(estudiante);
+        boolean estudianteRegistrado = estudianteDAO.insertarEstudiante(estudiante);
         if (!estudianteRegistrado) {
             return false;
         }

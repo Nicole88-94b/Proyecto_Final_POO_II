@@ -12,6 +12,8 @@ import modelo.Prestamo;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ControladorDePrestamos {
     private final EstudianteDAO estudianteDAO;
@@ -84,6 +86,52 @@ public class ControladorDePrestamos {
             throw new SQLException("Los sentimos, se registró la devolución pero no fue posible restituir el stock del libro");
         }
         return true;
+    }
+
+    public List<Prestamo> listarPrestamos() throws SQLException {
+        return prestamosDAO.listarPrestamos();
+    }
+
+    public List<Prestamo> listarPrestamosActivos() throws SQLException {
+        List<Prestamo> activos = new ArrayList<>();
+        for (Prestamo prestamo : prestamosDAO.listarPrestamos()) {
+            if (!prestamo.isDevuelto()) {
+                activos.add(prestamo);
+            }
+        }
+        return activos;
+    }
+
+    public List<Prestamo> listarHistorialPorEstudiante(int idEstudiante) throws SQLException {
+        if (idEstudiante <= 0) {
+            throw new IllegalArgumentException("El estudiante debe tener una ID válida.");
+        }
+        List<Prestamo> historial = new ArrayList<>();
+        for (Prestamo prestamo : prestamosDAO.listarPrestamos()) {
+            if (prestamo.getEstudiante().getIdEstudiante() == idEstudiante) {
+                historial.add(prestamo);
+            }
+        }
+        return historial;
+    }
+
+    public boolean estaAtrasado(Prestamo prestamo) {
+        if (prestamo == null) {
+            throw new IllegalArgumentException("El préstamo no puede ser nulo.");
+        }
+
+        return !prestamo.isDevuelto() && prestamo.getFechaDevolucion().isBefore(LocalDate.now());
+    }
+
+    public String obtenerEstado(Prestamo prestamo) {
+        if (prestamo.isDevuelto()) {
+            return "DEVUELTO";
+        }
+
+        if (estaAtrasado(prestamo)) {
+            return "ATRASADO";
+        }
+        return "ACTIVO";
     }
 
 }

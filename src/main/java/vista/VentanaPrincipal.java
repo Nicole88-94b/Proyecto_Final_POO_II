@@ -10,6 +10,7 @@ public class VentanaPrincipal extends JFrame {
    private JLabel lblUsuario;
    private JButton btnGestionarLibros;
    private JButton btnGestionarEstudiantes;
+   private JButton btnGestionarPrestamos;
    private JButton btnCerrarSesion;
 
     public VentanaPrincipal(Usuario usuario) {
@@ -19,9 +20,9 @@ public class VentanaPrincipal extends JFrame {
         setLocationRelativeTo(null);
     }
     private void estructuraBase() {
-        setTitle("Sistema de Gestión de la Biblioteca Universal");
+        setTitle("Sistema de Gestión de la Biblioteca Escolar");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1000, 800);
+        setSize(500, 400);
         setLocation(500, 300);
         getContentPane().setBackground(new Color(241, 245, 244));
     }
@@ -38,19 +39,27 @@ public class VentanaPrincipal extends JFrame {
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER));
         btnGestionarLibros = new JButton("Gestionar Libros");
         btnGestionarEstudiantes = new JButton("Gestionar Estudiantes");
+        btnGestionarPrestamos = new JButton("Gestionar Prestamos");
         btnCerrarSesion = new JButton("Cerrar Sesión");
 
 
         btnGestionarLibros.addActionListener(e -> abrirGestionLibros());
         btnGestionarEstudiantes.addActionListener(e -> abrirGestionEstudiantes());
+        btnGestionarPrestamos.addActionListener(e -> abrirGestionPrestamos());
         btnCerrarSesion.addActionListener(e -> cerrarSesion());
 
         panelBotones.add(btnGestionarLibros);
         btnGestionarLibros.setVisible("bibliotecario".equals(usuario.getRol()));
         panelBotones.add(btnGestionarEstudiantes);
         btnGestionarEstudiantes.setVisible("bibliotecario".equals(usuario.getRol()));
+        panelBotones.add(btnGestionarPrestamos);
         panelBotones.add(btnCerrarSesion);
         return panelBotones;
+    }
+
+    private void abrirGestionPrestamos() {
+        VentanaGestionDePrestamos ventanaPrestamos = new VentanaGestionDePrestamos(usuario);
+        ventanaPrestamos.setVisible(true);
     }
 
     private void abrirGestionEstudiantes() {
