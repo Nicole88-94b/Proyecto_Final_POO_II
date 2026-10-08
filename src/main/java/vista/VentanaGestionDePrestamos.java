@@ -130,6 +130,7 @@ public class VentanaGestionDePrestamos extends JFrame {
     }
 
     private void cargarHistorial() {
+        campoIsbnLibro.setText("");
         String rut = campoRutEstudiante.getText().trim();
         if (rut.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Por favor, ingrese el RUT del estudiante.",
@@ -150,6 +151,7 @@ public class VentanaGestionDePrestamos extends JFrame {
                         prestamo.getEstudiante().getNombre(),
                         prestamo.getEstudiante().getRut(),
                         prestamo.getLibro().getTitulo(),
+                        prestamo.getLibro().getIsbn(),
                         prestamo.getFechaPrestamo(),
                         prestamo.getFechaDevolucion(),
                         controladorDePrestamos.obtenerEstado(prestamo)
@@ -172,6 +174,7 @@ public class VentanaGestionDePrestamos extends JFrame {
                             prestamo.getEstudiante().getNombre(),
                             prestamo.getEstudiante().getRut(),
                             prestamo.getLibro().getTitulo(),
+                            prestamo.getLibro().getIsbn(),
                             prestamo.getFechaPrestamo(),
                             prestamo.getFechaDevolucion(),
                             controladorDePrestamos.obtenerEstado(prestamo)
@@ -199,7 +202,7 @@ public class VentanaGestionDePrestamos extends JFrame {
             return;
         }
         int idPrestamo = (int) modeloTablaPrestamos.getValueAt(fila, 0);
-        String estado = modeloTablaPrestamos.getValueAt(fila, 6).toString();
+        String estado = modeloTablaPrestamos.getValueAt(fila, 7).toString();
 
         if ("DEVUELTO".equals(estado)) {
             JOptionPane.showMessageDialog(this, "El préstamo seleccionado ya fue devuelto.",
@@ -235,32 +238,51 @@ public class VentanaGestionDePrestamos extends JFrame {
                     "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        try {
-            Prestamo prestamo = controladorDePrestamos.registrarPrestamo(rutEstudiante, isbnLibro);
-            if (prestamo == null) {
-                JOptionPane.showMessageDialog(this, "No fue posible registrar el préstamo.",
-                        "Error", JOptionPane.ERROR_MESSAGE);
-                return;
+        btnRegistrarPrestamo.setEnabled(false);
+        Thread hiloRegistro = new Thread(() -> {
+            try {
+                Prestamo prestamo = controladorDePrestamos.registrarPrestamo(rutEstudiante, isbnLibro);
+
+                SwingUtilities.invokeLater(() -> {
+                    if (prestamo == null) {
+                        JOptionPane.showMessageDialog(this, "No fue posible registrar el préstamo.",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    JOptionPane.showMessageDialog(this, "Préstamo registrado correctamente."
+                                    + "\nLibro: " + prestamo.getLibro().getTitulo()
+                                    + "\nFecha límite: " + prestamo.getFechaDevolucion(),
+                            "Registro exitoso", JOptionPane.INFORMATION_MESSAGE);
+
+                    campoIsbnLibro.setText("");
+
+                    if ("bibliotecario".equals(usuarioActual.getRol())) {
+                        campoRutEstudiante.setText("");
+                    }
+                    cargarPrestamos();
+                });
+
+            } catch (IllegalArgumentException | IllegalStateException e) {
+                SwingUtilities.invokeLater(() ->
+                        JOptionPane.showMessageDialog(this, e.getMessage(),
+                                "Préstamo rechazado", JOptionPane.ERROR_MESSAGE));
+
+            } catch (SQLException e) {
+                SwingUtilities.invokeLater(() ->
+                        JOptionPane.showMessageDialog(this,
+                                "No fue posible guardar el préstamo en la base de datos.",
+                                "Error de base de datos",
+                                JOptionPane.ERROR_MESSAGE));
+            } finally {
+                SwingUtilities.invokeLater(() -> btnRegistrarPrestamo.setEnabled(true));
             }
-            JOptionPane.showMessageDialog(this, "Préstamo registrado correctamente."
-                            + "\nLibro: " + prestamo.getLibro().getTitulo()
-                            + "\nFecha límite: " + prestamo.getFechaDevolucion(),
-                    "Registro exitoso", JOptionPane.INFORMATION_MESSAGE);
-            campoIsbnLibro.setText("");
-            if ("bibliotecario".equals(usuarioActual.getRol())) {
-                campoRutEstudiante.setText("");
-            }
-            cargarPrestamos();
-        } catch (IllegalArgumentException | IllegalStateException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage(),
-                    "Préstamo rechazado", JOptionPane.ERROR_MESSAGE);
-        } catch (SQLException e) {JOptionPane.showMessageDialog(this, "No fue posible guardar el préstamo en la base de datos.",
-                    "Error de base de datos", JOptionPane.ERROR_MESSAGE);
-        }
+        });
+
+        hiloRegistro.start();
     }
 
     private void listadoDePrestamos() {
-        String[] columnas = {"ID", "Estudiante", "RUT", "Libro",
+        String[] columnas = {"ID", "Estudiante", "RUT", "Libro", "ISBN",
                 "Fecha préstamo", "Fecha límite", "Estado"};
         modeloTablaPrestamos = new DefaultTableModel(columnas, 0);
         tablaPrestamos = new JTable(modeloTablaPrestamos);
@@ -281,6 +303,7 @@ public class VentanaGestionDePrestamos extends JFrame {
                         prestamos.getEstudiante().getNombre(),
                         prestamos.getEstudiante().getRut(),
                         prestamos.getLibro().getTitulo(),
+                        prestamos.getLibro().getIsbn(),
                         prestamos.getFechaPrestamo(),
                         prestamos.getFechaDevolucion(),
                         controladorDePrestamos.obtenerEstado(prestamos)
@@ -310,7 +333,6 @@ public class VentanaGestionDePrestamos extends JFrame {
     }
 
     private List<Prestamo> obtenerPrestamosVisibles() throws SQLException {
-        campoIsbnLibro.setText("");
         if ("bibliotecario".equals(usuarioActual.getRol())) {
             return controladorDePrestamos.listarPrestamos();
         }
