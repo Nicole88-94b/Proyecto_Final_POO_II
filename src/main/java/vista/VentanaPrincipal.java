@@ -9,6 +9,7 @@ public class VentanaPrincipal extends JFrame {
    private Usuario usuario;
    private JLabel lblUsuario;
    private JButton btnGestionarLibros;
+   private JButton btnGestionarEstudiantes;
    private JButton btnCerrarSesion;
 
     public VentanaPrincipal(Usuario usuario) {
@@ -18,7 +19,7 @@ public class VentanaPrincipal extends JFrame {
         setLocationRelativeTo(null);
     }
     private void estructuraBase() {
-        setTitle("Sistema de Gestión de la Biblioteca Universitaria");
+        setTitle("Sistema de Gestión de la Biblioteca Universal");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1000, 800);
         setLocation(500, 300);
@@ -36,14 +37,25 @@ public class VentanaPrincipal extends JFrame {
     public JPanel panelBotones() {
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER));
         btnGestionarLibros = new JButton("Gestionar Libros");
+        btnGestionarEstudiantes = new JButton("Gestionar Estudiantes");
         btnCerrarSesion = new JButton("Cerrar Sesión");
 
+
         btnGestionarLibros.addActionListener(e -> abrirGestionLibros());
+        btnGestionarEstudiantes.addActionListener(e -> abrirGestionEstudiantes());
         btnCerrarSesion.addActionListener(e -> cerrarSesion());
+
         panelBotones.add(btnGestionarLibros);
         btnGestionarLibros.setVisible("bibliotecario".equals(usuario.getRol()));
+        panelBotones.add(btnGestionarEstudiantes);
+        btnGestionarEstudiantes.setVisible("bibliotecario".equals(usuario.getRol()));
         panelBotones.add(btnCerrarSesion);
         return panelBotones;
+    }
+
+    private void abrirGestionEstudiantes() {
+        VentanaGestionEstudiantes ventanaEstudiantes = new VentanaGestionEstudiantes();
+        ventanaEstudiantes.setVisible(true);
     }
 
     private void abrirGestionLibros() {
