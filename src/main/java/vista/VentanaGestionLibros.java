@@ -33,7 +33,7 @@ public class VentanaGestionLibros extends JFrame {
 
     private void estructuraBase() {
         setTitle("Gestión de Libros");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(800, 600);
         setLocation(500, 300);
         getContentPane().setBackground(new Color(241, 245, 244));
@@ -42,7 +42,7 @@ public class VentanaGestionLibros extends JFrame {
         setLayout(new BorderLayout(0, 10));
         add(campos(), BorderLayout.NORTH);
         cargarCategorias();
-        listadodeLibros();
+        listadoDeLibros();
         add(panelBotones(), BorderLayout.SOUTH);
 
     }
@@ -173,7 +173,7 @@ public class VentanaGestionLibros extends JFrame {
 
     }
 
-    private void listadodeLibros() {
+    private void listadoDeLibros() {
         String [] columnas = {"ID", "Título", "Autor", "ISBN", "Editorial", "Stock", "Categoría"};
         modeloTablaLibros = new DefaultTableModel(columnas, 0);
         tablaLibros = new JTable(modeloTablaLibros);
@@ -260,6 +260,12 @@ public class VentanaGestionLibros extends JFrame {
          try {
              int nuevoStock = validarStock(stock);
              Libro libroModificado = new Libro(idLibro, titulo, autor, isbn, editorial, nuevoStock, categoriaSeleccionada);
+             int opcion = JOptionPane.showConfirmDialog(this, "¿Desea guardar los cambios realizados en este libro?", "Confirmar modificación",
+                     JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+             if (opcion != JOptionPane.YES_OPTION) {
+                 return;
+             }
              boolean modificado = controladorDeLibros.actualizarLibro(libroModificado);
              if (modificado) {
                  JOptionPane.showMessageDialog(this, "Libro modificado exitosamente");
