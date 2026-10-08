@@ -112,6 +112,19 @@ src/main/
 
 La contraseña de la base de datos no se guarda dentro del código ni se incluye en Git.
 
+### Ejecución del archivo JAR
+
+Para ejecutar la versión empaquetada en otro computador, primero se debe iniciar MySQL y ejecutar los scripts de creación y poblamiento de la base de datos. Como la contraseña del usuario `root` puede ser diferente en cada equipo, debe configurarse antes de iniciar la aplicación.
+
+En PowerShell, abre una terminal dentro de la carpeta que contiene el JAR y ejecuta:
+
+```powershell
+$env:BIBLIOTECA_DB_PASSWORD='SU_CONTRASEÑA_DE_MYSQL'
+java -jar ".\biblioteca-escolar-eft-1.0-SNAPSHOT-ejecutable.jar"
+```
+
+La variable se mantiene solamente durante esa sesión de terminal. Si no se configura o la contraseña es incorrecta, la aplicación podrá abrirse, pero no podrá consultar la información almacenada en MySQL.
+
 ## Usuarios de prueba
 
 El script de poblado incluye, entre otras, las siguientes cuentas:
