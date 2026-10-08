@@ -27,4 +27,8 @@ public class Categoria {
         }
         this.nombre = nombre.trim();
     }
+    @Override
+    public String toString() {
+        return nombre;
+    }
 }
