@@ -105,4 +105,24 @@ public class EstudianteDAOImpl  implements EstudianteDAO {
         }
 
     }
+
+    @Override
+    public Estudiante buscarEstudiantePorRut(String rut) throws SQLException {
+        if (rut == null || rut.trim().isEmpty()) {
+            throw new IllegalArgumentException("Debe ingresar el RUT del estudiante.");
+        }
+        String sql = "SELECT id, nombre, rut, curso, correo FROM estudiantes WHERE rut = ?";
+        Connection db = DatabaseConnection.getInstance().getConnection();
+        try (PreparedStatement ps = db.prepareStatement(sql)) {
+            ps.setString(1, rut.trim());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new Estudiante(rs.getString("nombre"),
+                            rs.getString("rut"), rs.getString("correo"),
+                            rs.getInt("id"), rs.getString("curso"));
+                }
+            }
+        }
+        return null;
+    }
 }

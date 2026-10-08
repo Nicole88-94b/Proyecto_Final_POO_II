@@ -38,4 +38,8 @@ public class ControladorDeLibros {
         return this.libroDAO.eliminarLibro(idLibro);
     }
 
+    public Libro buscarLibroPorIsbn(String isbn) throws SQLException {
+        return this.libroDAO.buscarLibroPorISBN(isbn);
+    }
+
 }

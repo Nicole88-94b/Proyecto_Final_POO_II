@@ -4,6 +4,7 @@ import modelo.Usuario;
 
 import javax.swing.*;
 import java.awt.*;
+import java.net.URL;
 
 public class VentanaPrincipal extends JFrame {
    private Usuario usuario;
@@ -22,7 +23,7 @@ public class VentanaPrincipal extends JFrame {
     private void estructuraBase() {
         setTitle("Sistema de Gestión de la Biblioteca Escolar");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(500, 400);
+        setSize(800, 520);
         setLocation(500, 300);
         getContentPane().setBackground(new Color(241, 245, 244));
     }
@@ -32,12 +33,29 @@ public class VentanaPrincipal extends JFrame {
         lblUsuario = new JLabel("Bienvenido/a, " + usuario.getNombre()
                 + " | Tipo de usuario: " + usuario.getRol(), SwingConstants.CENTER);
         add(lblUsuario, BorderLayout.NORTH);
+        add(crearImagenPrincipal(), BorderLayout.CENTER);
         add(panelBotones(), BorderLayout.SOUTH);
+    }
+
+    private JLabel crearImagenPrincipal() {
+        URL recursoImagen = getClass().getResource("/images/biblioteca_principal.png");
+        if (recursoImagen == null) {
+            return new JLabel();
+        }
+
+        ImageIcon iconoOriginal = new ImageIcon(recursoImagen);
+        Image imagenEscalada = iconoOriginal.getImage()
+                .getScaledInstance(360, 360, Image.SCALE_SMOOTH);
+        return new JLabel(new ImageIcon(imagenEscalada), SwingConstants.CENTER);
     }
 
     public JPanel panelBotones() {
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER));
         btnGestionarLibros = new JButton("Gestionar Libros");
+
+        if (!"bibliotecario".equals(usuario.getRol())) {
+            btnGestionarLibros.setText("Consultar Libros");
+        }
         btnGestionarEstudiantes = new JButton("Gestionar Estudiantes");
         btnGestionarPrestamos = new JButton("Gestionar Prestamos");
         btnCerrarSesion = new JButton("Cerrar Sesión");
@@ -49,7 +67,6 @@ public class VentanaPrincipal extends JFrame {
         btnCerrarSesion.addActionListener(e -> cerrarSesion());
 
         panelBotones.add(btnGestionarLibros);
-        btnGestionarLibros.setVisible("bibliotecario".equals(usuario.getRol()));
         panelBotones.add(btnGestionarEstudiantes);
         btnGestionarEstudiantes.setVisible("bibliotecario".equals(usuario.getRol()));
         panelBotones.add(btnGestionarPrestamos);
@@ -68,7 +85,8 @@ public class VentanaPrincipal extends JFrame {
     }
 
     private void abrirGestionLibros() {
-        VentanaGestionLibros ventanaLibros = new VentanaGestionLibros();
+        boolean soloLectura = !"bibliotecario".equals(usuario.getRol());
+        VentanaGestionLibros ventanaLibros = new VentanaGestionLibros(soloLectura);
         ventanaLibros.setVisible(true);
     }
 

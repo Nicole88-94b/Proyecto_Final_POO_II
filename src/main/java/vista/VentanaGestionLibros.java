@@ -23,8 +23,14 @@ public class VentanaGestionLibros extends JFrame {
     private JButton btnModificar;
     private JButton btnEliminar;
     private JButton btnLimpiar;
+    private final boolean soloLectura;
 
     public VentanaGestionLibros() {
+        this(false);
+    }
+
+    public VentanaGestionLibros(boolean soloLectura) {
+        this.soloLectura = soloLectura;
         controladorDeLibros = new ControladorDeLibros();
         estructuraBase();
         panelVentana();
@@ -40,10 +46,15 @@ public class VentanaGestionLibros extends JFrame {
     }
     private void panelVentana() {
         setLayout(new BorderLayout(0, 10));
-        add(campos(), BorderLayout.NORTH);
-        cargarCategorias();
+        if (!soloLectura) {
+            add(campos(), BorderLayout.NORTH);
+            cargarCategorias();
+        }
         listadoDeLibros();
-        add(panelBotones(), BorderLayout.SOUTH);
+
+        if (!soloLectura) {
+            add(panelBotones(), BorderLayout.SOUTH);
+        }
 
     }
     private void cargarCategorias() {
@@ -179,11 +190,14 @@ public class VentanaGestionLibros extends JFrame {
         tablaLibros = new JTable(modeloTablaLibros);
         tablaLibros.setDefaultEditor(Object.class, null);
 
-        tablaLibros.getSelectionModel().addListSelectionListener(evento -> {
-            if (!evento.getValueIsAdjusting()) {
-                cargarLibroSeleccionado();
-            }
-        });
+        if (!soloLectura) {
+            tablaLibros.getSelectionModel()
+                    .addListSelectionListener(evento -> {
+                        if (!evento.getValueIsAdjusting()) {
+                            cargarLibroSeleccionado();
+                        }
+                    });
+        }
         add(new JScrollPane(tablaLibros), BorderLayout.CENTER);
         tablaLibros.getColumnModel().getColumn(0).setMinWidth(0);
         tablaLibros.getColumnModel().getColumn(0).setMaxWidth(0);

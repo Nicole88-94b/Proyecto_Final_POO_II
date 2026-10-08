@@ -13,7 +13,9 @@ import modelo.Prestamo;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ControladorDePrestamos {
     private final EstudianteDAO estudianteDAO;
@@ -132,6 +134,35 @@ public class ControladorDePrestamos {
             return "ATRASADO";
         }
         return "ACTIVO";
+    }
+
+    public Prestamo registrarPrestamo(String rut, String isbn) throws SQLException {
+
+        if (rut == null || rut.trim().isEmpty() || isbn == null || isbn.trim().isEmpty()) {
+            throw new IllegalArgumentException("Debe ingresar el RUT y el ISBN.");
+        }
+
+        Estudiante estudiante = estudianteDAO.buscarEstudiantePorRut(rut.trim());
+        if (estudiante == null) {
+            throw new IllegalArgumentException("No se encontró un estudiante con ese RUT.");
+        }
+
+        Libro libro = libroDAO.buscarLibroPorISBN(isbn.trim());
+        if (libro == null) {
+            throw new IllegalArgumentException("No se encontró un libro con ese ISBN.");
+        }
+        return registrarPrestamo(estudiante.getIdEstudiante(), libro.getIdLibro());
+    }
+
+    public Map<String, Integer> contarPrestamosPorLibro() throws SQLException {
+
+        Map<String, Integer> cantidadPorLibro = new HashMap<>();
+        for (Prestamo prestamo : prestamosDAO.listarPrestamos()) {
+            String titulo = prestamo.getLibro().getTitulo();
+            int cantidadActual = cantidadPorLibro.getOrDefault(titulo, 0);
+            cantidadPorLibro.put(titulo, cantidadActual + 1);
+        }
+        return cantidadPorLibro;
     }
 
 }

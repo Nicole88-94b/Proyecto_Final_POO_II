@@ -84,4 +84,8 @@ public class ControladorDeEstudiantes {
         return usuarioDAO.eliminarUsuario(usuario.getIdUsuario());
     }
 
+    public Estudiante buscarEstudiantePorRut(String rut) throws SQLException {
+        return estudianteDAO.buscarEstudiantePorRut(rut);
+    }
+
 }

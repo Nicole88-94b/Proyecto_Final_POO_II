@@ -124,4 +124,34 @@ public class LibroDAOImpl implements LibroDAO {
         }
         return libros;
     }
+
+    @Override
+    public Libro buscarLibroPorISBN(String isbn) throws SQLException {
+        if (isbn == null || isbn.trim().isEmpty()) {
+            throw new IllegalArgumentException("Se debe ingresar un ISBN válido");
+
+        }
+        String sql = "SELECT id, titulo, autor, isbn, editorial, stock, id_categoria FROM libros WHERE isbn = ?";
+        Connection db = DatabaseConnection.getInstance().getConnection();
+        try (PreparedStatement ps = db.prepareStatement(sql)) {
+            ps.setString(1, isbn.trim());
+            try (ResultSet rs = ps.executeQuery()) {
+
+                if (rs.next()) {
+                    CategoriaDAO categoriaDAO = new CategoriaDAOImpl();
+                    Categoria categoriaLibro = categoriaDAO.buscarCategoriaPorId(rs.getInt("id_categoria"));
+                    if (categoriaLibro == null) {
+                        throw new SQLException("No se encontró la categoría del libro");
+                    }
+                    return new Libro(rs.getInt("id"), rs.getString("titulo"),
+                            rs.getString("autor"), rs.getString("isbn"),
+                            rs.getString("editorial"), rs.getInt("stock"), categoriaLibro);
+                }
+            }
+        }
+        return null;
+    }
+
 }
+
+

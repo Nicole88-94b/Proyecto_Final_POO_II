@@ -13,6 +13,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 public class VentanaGestionDePrestamos extends JFrame {
     private Usuario usuarioActual;
@@ -28,6 +29,7 @@ public class VentanaGestionDePrestamos extends JFrame {
     private JButton btnMostrarTodos;
     private JButton btnMostrarActivos;
     private JButton btnVerHistorial;
+    private JButton btnLibrosMasPrestados;
 
 
     public VentanaGestionDePrestamos(Usuario usuarioActual) {
@@ -114,19 +116,56 @@ public class VentanaGestionDePrestamos extends JFrame {
         btnMostrarTodos = new JButton("Mostrar Todos");
         btnMostrarActivos = new JButton("Mostrar Préstamos Activos");
         btnVerHistorial = new JButton("Ver Historial");
+        btnLibrosMasPrestados = new JButton("Libros más prestados");
 
         btnRegistrarPrestamo.addActionListener(e -> registrarPrestamo());
         btnDevolverPrestamo.addActionListener(e -> devolverPrestamo());
         btnMostrarTodos.addActionListener(e -> cargarPrestamos());
         btnMostrarActivos.addActionListener(e -> cargarPrestamosActivos());
         btnVerHistorial.addActionListener(e -> cargarHistorial());
+        btnLibrosMasPrestados.addActionListener(e -> mostrarLibrosMasPrestados());
 
         panelBotones.add(btnRegistrarPrestamo);
         panelBotones.add(btnDevolverPrestamo);
         panelBotones.add(btnMostrarActivos);
         panelBotones.add(btnMostrarTodos);
         panelBotones.add(btnVerHistorial);
+        panelBotones.add(btnLibrosMasPrestados);
         return panelBotones;
+    }
+
+    private void mostrarLibrosMasPrestados() {
+        try {
+            Map<String, Integer> conteo = controladorDePrestamos.contarPrestamosPorLibro();
+
+            if (conteo.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Todavía no existen préstamos registrados.");
+                return;
+            }
+
+            int mayorCantidad = 0;
+            for (int cantidad : conteo.values()) {
+                if (cantidad > mayorCantidad) {
+                    mayorCantidad = cantidad;
+                }
+            }
+            StringBuilder resultado = new StringBuilder("Libro(s) más prestado(s):\n\n");
+
+            for (Map.Entry<String, Integer> libro : conteo.entrySet()) {
+                if (libro.getValue() == mayorCantidad) {
+                    resultado.append(libro.getKey())
+                            .append(" - ")
+                            .append(libro.getValue())
+                            .append(" préstamo(s)\n");
+                }
+            }
+            JOptionPane.showMessageDialog(this, resultado.toString(), "Reporte de libros más prestados",
+                    JOptionPane.INFORMATION_MESSAGE);
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "No fue posible generar el reporte.",
+                    "Error de base de datos", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void cargarHistorial() {
@@ -325,6 +364,7 @@ public class VentanaGestionDePrestamos extends JFrame {
     private void configurarUsuario() {
             boolean esBibliotecario = "bibliotecario".equals(usuarioActual.getRol());
             btnMostrarTodos.setVisible(esBibliotecario);
+            btnLibrosMasPrestados.setVisible(esBibliotecario);
 
             if (!esBibliotecario) {
                 campoRutEstudiante.setText(usuarioActual.getRut());

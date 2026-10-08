@@ -11,4 +11,5 @@ public interface LibroDAO {
     boolean eliminarLibro(int idLibro) throws SQLException;
     Libro buscarLibroPorId(int idLibro) throws SQLException;
     List<Libro> listarLibros() throws SQLException;
+    Libro buscarLibroPorISBN(String isbn) throws SQLException;
 }
